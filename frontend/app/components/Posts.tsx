@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import Image from 'next/image'
+import { urlFor } from '@/sanity/lib/image'
 
 import {sanityFetch} from '@/sanity/lib/live'
 import {morePostsQuery, allPostsQuery} from '@/sanity/lib/queries'
@@ -9,7 +11,7 @@ import Avatar from '@/app/components/Avatar'
 import {createDataAttribute} from 'next-sanity'
 
 const Post = ({post}: {post: AllPostsQueryResult[number]}) => {
-  const {_id, title, slug, excerpt, date, author} = post
+  const {_id, title, slug, excerpt, date, author, coverImage} = post
 
   const attr = createDataAttribute({
     id: _id,
@@ -21,25 +23,41 @@ const Post = ({post}: {post: AllPostsQueryResult[number]}) => {
     <article
       data-sanity={attr()}
       key={_id}
-      className="border border-gray-200 rounded-sm p-6 bg-gray-50 flex flex-col justify-between transition-colors hover:bg-white relative"
+      className="group col-span-1 rounded-2xl p-6 bg-[#e4e4e4] flex flex-col justify-between transition-colors hover:bg-white relative overflow-hidden"
     >
       <Link className="hover:text-brand underline transition-colors" href={`/posts/${slug}`}>
         <span className="absolute inset-0 z-10" />
       </Link>
-      <div>
-        <h3 className="text-2xl font-bold mb-4 leading-tight">{title}</h3>
-
-        <p className="line-clamp-3 text-sm leading-6 text-gray-600 max-w-[70ch]">{excerpt}</p>
-      </div>
-      <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
-        {author && author.firstName && author.lastName && (
-          <div className="flex items-center">
-            <Avatar person={author} small={true} />
-          </div>
-        )}
-        <time className="text-gray-500 text-xs font-mono" dateTime={date}>
-          <DateComponent dateString={date} />
-        </time>
+      
+      {/* Imagem destaque no topo do card */}
+      {coverImage && (
+        <div className="relative w-full h-48 ">
+          <Image
+            src={urlFor(coverImage).width(600).height(300).url()}
+            alt={coverImage.alt || title || ''}
+            fill
+            className="object-cover rounded-2xl"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        </div>
+      )}
+      
+      <div className="pt-6 flex flex-col justify-between flex-1">
+        <div>
+          <h3 className="text-2xl font-bold mb-4 leading-tight">{title}</h3>
+          <p className="line-clamp-3 text-sm leading-6 text-gray-600 max-w-[70ch]">{excerpt}</p>
+        </div>
+        
+        <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
+          {author && author.firstName && author.lastName && (
+            <div className="flex items-center">
+              <Avatar person={author} small={true} />
+            </div>
+          )}
+          <time className="text-gray-500 text-xs font-mono" dateTime={date}>
+            <DateComponent dateString={date} />
+          </time>
+        </div>
       </div>
     </article>
   )
@@ -93,8 +111,8 @@ export const AllPosts = async () => {
 
   return (
     <Posts
-      heading="Recent Posts"
-      subHeading={`${data.length === 1 ? 'This blog post is' : `These ${data.length} blog posts are`} populated from your Sanity Studio.`}
+      heading="Posts Recentes"
+      subHeading={`${data.length === 1 ? 'Os melhores reviews!' : `These ${data.length} blog posts are`} `}
     >
       {data.map((post: any) => (
         <Post key={post._id} post={post} />

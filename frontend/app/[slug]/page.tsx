@@ -63,7 +63,7 @@ export default async function Page(props: Props) {
       </Head>
       <div className="">
         <div className="container">
-          <div className="pb-6 border-b border-gray-100">
+          <div className=" border-b border-gray-100">
             <div className="max-w-3xl">
               <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-7xl">
                 {page.heading}

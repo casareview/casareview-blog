@@ -2,7 +2,7 @@ import './globals.css'
 
 import {SpeedInsights} from '@vercel/speed-insights/next'
 import type {Metadata} from 'next'
-import {Inter} from 'next/font/google'
+import {Nunito} from 'next/font/google'
 import {draftMode} from 'next/headers'
 import {VisualEditing, toPlainText} from 'next-sanity'
 import {Toaster} from 'sonner'
@@ -51,7 +51,7 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-const inter = Inter({
+const nunito = Nunito({
   variable: '--font-inter',
   subsets: ['latin'],
   display: 'swap',
@@ -61,7 +61,7 @@ export default async function RootLayout({children}: {children: React.ReactNode}
   const {isEnabled: isDraftMode} = await draftMode()
 
   return (
-    <html lang="en" className={`${inter.variable} bg-white text-black`}>
+    <html lang="pt-br" className={`${nunito.variable} bg-white text-black`}>
       <body>
         <section className="min-h-screen pt-24">
           {/* The <Toaster> component is responsible for rendering toast notifications used in /app/client-utils.ts and /app/components/DraftModeToast.tsx */}

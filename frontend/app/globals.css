@@ -33,3 +33,7 @@
 
   --default-transition-duration: 250ms;
 }
+
+body{
+  font-family: "nunito";
+}
