@@ -14,7 +14,8 @@
     "dev": "sanity dev",
     "extract-types": "sanity schema extract --enforce-required-fields",
     "start": "sanity start",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "vercel-build": "sanity build"
   },
   "dependencies": {
     "@sanity/assist": "^5.0.0",
