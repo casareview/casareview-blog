@@ -1,41 +1,42 @@
+// app/[category]/page.tsx
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { sanityFetch } from '@/sanity/lib/live'
 import { postsByCategoryQuery } from '@/sanity/lib/queries'
+import { defineQuery } from 'next-sanity'
 import { Post } from '@/app/components/Posts'
 
 type Props = {
   params: Promise<{ category: string }>
 }
 
-// Lista de categorias válidas
-const VALID_CATEGORIES = ['eletrodomesticos', 'cozinha', 'casa', 'reviews'];
-
-const CATEGORY_TITLES = {
-  eletrodomesticos: 'Eletrodomésticos',
-  cozinha: 'Cozinha', 
-  casa: 'Casa',
-  reviews: 'Reviews'
-};
-
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params;
-  const categoryTitle = CATEGORY_TITLES[params.category as keyof typeof CATEGORY_TITLES];
   
-  if (!categoryTitle) {
+  const { data: categoryData } = await sanityFetch({
+    query: defineQuery(`*[_type == "category" && slug.current == $category][0]`),
+    params: { category: params.category },
+  });
+  
+  if (!categoryData) {
     return { title: 'Categoria não encontrada' };
   }
 
   return {
-    title: `${categoryTitle} - Reviews e Guias | CasaReview`,
-    description: `Reviews completos de produtos de ${categoryTitle.toLowerCase()}. Análises detalhadas, comparativos e recomendações de compra.`,
+    title: `${categoryData.title} - Reviews e Guias | CasaReview`,
+    description: categoryData.description || `Reviews completos de produtos de ${categoryData.title.toLowerCase()}.`,
   };
 }
 
 export default async function CategoryPage(props: Props) {
   const params = await props.params;
   
-  if (!VALID_CATEGORIES.includes(params.category)) {
+  const { data: categoryData } = await sanityFetch({
+    query: defineQuery(`*[_type == "category" && slug.current == $category][0]`),
+    params: { category: params.category },
+  });
+
+  if (!categoryData) {
     return notFound();
   }
 
@@ -44,17 +45,17 @@ export default async function CategoryPage(props: Props) {
     params: { category: params.category },
   });
 
-  const categoryTitle = CATEGORY_TITLES[params.category as keyof typeof CATEGORY_TITLES];
-
   return (
     <div className="container py-12">
       <div className="mb-12">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          {categoryTitle}
+          {categoryData.title}
         </h1>
-        <p className="text-lg text-gray-600">
-          Reviews e análises completas de produtos para {categoryTitle.toLowerCase()}
-        </p>
+        {categoryData.description && (
+          <p className="text-lg text-gray-600">
+            {categoryData.description}
+          </p>
+        )}
       </div>
 
       <div className="pt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

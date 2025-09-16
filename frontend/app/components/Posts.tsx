@@ -4,7 +4,7 @@ import { urlFor } from '@/sanity/lib/image'
 
 import {sanityFetch} from '@/sanity/lib/live'
 import {morePostsQuery, allPostsQuery} from '@/sanity/lib/queries'
-import {Post as PostType, AllPostsQueryResult} from '@/sanity.types'
+import {Post as PostType, AllPostsQueryResult} from '@/app/sanity.types'
 import DateComponent from '@/app/components/Date'
 import OnBoarding from '@/app/components/Onboarding'
 import Avatar from '@/app/components/Avatar'
@@ -25,9 +25,12 @@ const Post = ({post}: {post: AllPostsQueryResult[number]}) => {
       key={_id}
       className="group col-span-1 rounded-2xl p-6 bg-[#F5F5F5] flex flex-col justify-between transition-colors hover:bg-white relative overflow-hidden"
     >
-      <Link className="hover:text-brand underline transition-colors" href={`/${post.category}/${post.slug}`}>
-        <span className="absolute inset-0 z-10" />
-      </Link>
+      <Link
+  className="hover:text-brand underline transition-colors"
+  href={`/${post.category?.slug || 'posts'}/${post.slug}`}
+>
+  <span className="absolute inset-0 z-10" />
+</Link>
       
       {/* Imagem destaque no topo do card */}
       {coverImage && (

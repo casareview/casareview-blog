@@ -2,6 +2,7 @@ import {defineQuery} from 'next-sanity'
 
 export const settingsQuery = defineQuery(`*[_type == "settings"][0]`)
 
+// lib/queries.ts
 const postFields = /* groq */ `
   _id,
   "status": select(_originalId in path("drafts.**") => "draft", "published"),
@@ -10,7 +11,9 @@ const postFields = /* groq */ `
   excerpt,
   metaTitle,
   metaDescription,
-  category,
+  "category": category-> {         
+    "slug": slug.current            
+  },
   tags,
   coverImage {
     asset,
@@ -104,25 +107,37 @@ export const pagesSlugs = defineQuery(`
 `)
 
 export const postByCategoryQuery = defineQuery(`
-  *[_type == "post" && category == $category && slug.current == $slug] [0] {
+  *[_type == "post" && category->slug.current == $category && slug.current == $slug] [0] {
     content[]{
-    ...,
-    markDefs[]{
       ...,
-      ${linkReference}
-    }
-  },
+      markDefs[]{
+        ...,
+        _type == "link" => {
+          "page": page->slug.current,
+          "post": post->slug.current
+        }
+      }
+    },
     ${postFields}
   }
 `)
 
 export const postPagesCategorySlugs = defineQuery(`
-  *[_type == "post" && defined(slug.current) && defined(category)]
-  {"category": category, "slug": slug.current}
+  *[_type == "post" && defined(slug.current) && defined(category)] {
+    "slug": slug.current,
+    "category": category->slug.current  
+  }
 `)
 
 export const postsByCategoryQuery = defineQuery(`
-  *[_type == "post" && category == $category && defined(slug.current)] | order(date desc, _updatedAt desc) {
+  *[_type == "post" && category->slug.current == $category && defined(slug.current)] | order(date desc, _updatedAt desc) {
     ${postFields}
+  }
+`)
+
+export const allCategoriesQuery = defineQuery(`
+  *[_type == "category"] | order(title asc) {
+    title,
+    "slug": slug.current
   }
 `)

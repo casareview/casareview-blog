@@ -59,18 +59,11 @@ export const post = defineType({
       validation: (rule) => rule.max(160).warning('Descrições muito longas podem ser cortadas'),
     }),
 
- defineField({
+    defineField({
       name: 'category',
       title: 'Categoria',
-      type: 'string',
-      options: {
-        list: [
-          {title: 'Eletrodomésticos', value: 'eletrodomesticos'},
-          {title: 'Cozinha', value: 'cozinha'},
-          {title: 'Casa', value: 'casa'},
-          {title: 'Reviews', value: 'reviews'},
-        ],
-      },
+      type: 'reference',
+      to: [{type: 'category'}], // referencia o schema "category"
       validation: (rule) => rule.required(),
     }),
 
