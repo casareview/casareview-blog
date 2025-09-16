@@ -23,7 +23,7 @@ const Post = ({post}: {post: AllPostsQueryResult[number]}) => {
     <article
       data-sanity={attr()}
       key={_id}
-      className="group col-span-1 rounded-2xl p-6 bg-[#e4e4e4] flex flex-col justify-between transition-colors hover:bg-white relative overflow-hidden"
+      className="group col-span-1 rounded-2xl p-6 bg-[#F5F5F5] flex flex-col justify-between transition-colors hover:bg-white relative overflow-hidden"
     >
       <Link className="hover:text-brand underline transition-colors" href={`/posts/${slug}`}>
         <span className="absolute inset-0 z-10" />
@@ -79,7 +79,7 @@ const Posts = ({
       </h2>
     )}
     {subHeading && <p className="mt-2 text-lg leading-8 text-gray-600">{subHeading}</p>}
-    <div className="pt-6 space-y-6">{children}</div>
+    <div className="pt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">{children}</div>
   </div>
 )
 
@@ -111,8 +111,8 @@ export const AllPosts = async () => {
 
   return (
     <Posts
-      heading="Posts Recentes"
-      subHeading={`${data.length === 1 ? 'Os melhores reviews!' : `These ${data.length} blog posts are`} `}
+      heading="Veja todos os Reviews"
+      subHeading={`${data.length === 1 ? 'Os melhores reviews!' : `${data.length} posts`} `}
     >
       {data.map((post: any) => (
         <Post key={post._id} post={post} />
