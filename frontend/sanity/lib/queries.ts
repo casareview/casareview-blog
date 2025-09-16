@@ -8,10 +8,14 @@ const postFields = /* groq */ `
   "title": coalesce(title, "Untitled"),
   "slug": slug.current,
   excerpt,
+  metaTitle,
+  metaDescription,
+  category,
+  tags,
   coverImage {
-  asset,
-  alt
-},
+    asset,
+    alt
+  },
   "date": coalesce(date, _updatedAt),
   "author": author->{firstName, lastName, picture},
 `
@@ -97,4 +101,28 @@ export const postPagesSlugs = defineQuery(`
 export const pagesSlugs = defineQuery(`
   *[_type == "page" && defined(slug.current)]
   {"slug": slug.current}
+`)
+
+export const postByCategoryQuery = defineQuery(`
+  *[_type == "post" && category == $category && slug.current == $slug] [0] {
+    content[]{
+    ...,
+    markDefs[]{
+      ...,
+      ${linkReference}
+    }
+  },
+    ${postFields}
+  }
+`)
+
+export const postPagesCategorySlugs = defineQuery(`
+  *[_type == "post" && defined(slug.current) && defined(category)]
+  {"category": category, "slug": slug.current}
+`)
+
+export const postsByCategoryQuery = defineQuery(`
+  *[_type == "post" && category == $category && defined(slug.current)] | order(date desc, _updatedAt desc) {
+    ${postFields}
+  }
 `)

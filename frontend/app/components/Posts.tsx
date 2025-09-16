@@ -25,7 +25,7 @@ const Post = ({post}: {post: AllPostsQueryResult[number]}) => {
       key={_id}
       className="group col-span-1 rounded-2xl p-6 bg-[#F5F5F5] flex flex-col justify-between transition-colors hover:bg-white relative overflow-hidden"
     >
-      <Link className="hover:text-brand underline transition-colors" href={`/posts/${slug}`}>
+      <Link className="hover:text-brand underline transition-colors" href={`/${post.category}/${post.slug}`}>
         <span className="absolute inset-0 z-10" />
       </Link>
       
@@ -120,3 +120,5 @@ export const AllPosts = async () => {
     </Posts>
   )
 }
+
+export { Post };

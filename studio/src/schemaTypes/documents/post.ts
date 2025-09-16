@@ -41,6 +41,48 @@ export const post = defineType({
       title: 'Excerpt',
       type: 'text',
     }),
+
+    defineField({
+      name: 'metaTitle',
+      title: 'Meta Title (SEO)',
+      type: 'string',
+      description: 'Título otimizado para SEO (máx. 60 caracteres)',
+      validation: (rule) =>
+        rule.max(60).warning('Títulos muito longos podem ser cortados nos resultados de busca'),
+    }),
+
+    defineField({
+      name: 'metaDescription',
+      title: 'Meta Description (SEO)',
+      type: 'text',
+      description: 'Descrição para mecanismos de busca (150-160 caracteres)',
+      validation: (rule) => rule.max(160).warning('Descrições muito longas podem ser cortadas'),
+    }),
+
+ defineField({
+      name: 'category',
+      title: 'Categoria',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Eletrodomésticos', value: 'eletrodomesticos'},
+          {title: 'Cozinha', value: 'cozinha'},
+          {title: 'Casa', value: 'casa'},
+          {title: 'Reviews', value: 'reviews'},
+        ],
+      },
+      validation: (rule) => rule.required(),
+    }),
+
+    defineField({
+      name: 'tags',
+      title: 'Tags',
+      type: 'array',
+      of: [{type: 'string'}],
+      options: {
+        layout: 'tags',
+      },
+    }),
     defineField({
       name: 'coverImage',
       title: 'Cover Image',
